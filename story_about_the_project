@@ -22,15 +22,15 @@ We built an **automated assembly line** (GitHub Actions). When a developer submi
 
 - Builds the code into a "shipping container" (Docker).
 - Runs millions of tests to ensure it works.
-- Scans it for hidden backdoors or security flaws (SAST/DAST)—like a TSA agent checking luggage before it boards a plane.
+- Scans it for hidden backdoors or security flaws (SAST/DAST)—like a Border Control agent checking luggage (using a security tool called *Trivy*) before it boards a plane.
 
-If it passes all the checks, it moves to the final stage. If it fails, it gets kicked back immediately. We catch problems in seconds, not weeks.
+If it passes all the checks, we store that shipping container securely in the **GitHub Container Registry (ghcr.io)**. This acts as our global warehouse, where we keep every single version ever built. If it fails, it gets kicked back immediately. We catch problems in seconds, not weeks.
 
 **Step 3: The "Neighborhood" that Fixes Itself (Kubernetes)**
 Once the code is ready, it needs a place to live. We use a system called Kubernetes, which I like to think of as a massive, self-healing apartment complex (EKS).
 
-- **Self-Healing:** If one of the "apartments" (servers) catches fire and crashes, Kubernetes automatically kicks that tenant out and spins up a new, healthy one in under a minute. The city's dashboard never goes down.
-- **The Seamless Flip (Blue/Green):** How do we update the software without the city noticing? We don't shut down the old system. Instead, we build a brand-new copy right next to it (Green). We let it warm up, test it live, and then—just like a railway switch—we flick a single switch to divert all the city's traffic to the new version. If we see a glitch, we flick the switch back instantly. **Zero downtime.** No angry citizens, no confused mayors.
+- **Self-Healing:** If one of the "apartments" (servers) catches fire and crashes, Kubernetes automatically breaks down the "apartment" and spins up a new, healthy one in under a minute. The city's dashboard never goes down.
+- **The Seamless Flip (Blue/Green):** When the city is ready for an update, we don't shut down the old system. Instead, we use GitHub's **Environment Protection Rules**. A senior engineer gets a notification on their phone approving the release. Once approved, our pipeline reaches into the GitHub warehouse, grabs the exact container version, and deploys it using the seamless 'Blue/Green' switch I mentioned earlier. Because GitHub Actions is tightly integrated with the code, we know exactly which developer wrote which line of code, and we have a complete audit trail of who approved the release to production. This gives the client's leadership the visibility and confidence they need to run a critical city infrastructure."
 
 **Step 4: The Central Command Center (Monitoring)**
 Finally, we built a live "Mission Control" dashboard (Prometheus/Grafana). We don't wait for the client to call us to say "It’s slow." We see it on our screens. We get alerts on our phones if a hard drive is getting full or a server is overheating, *hours* before it could ever affect the traffic lights. We proactively fix issues while the city sleeps.
