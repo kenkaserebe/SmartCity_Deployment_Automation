@@ -187,9 +187,9 @@ jobs:
                     aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
             -   name: Setup kubectl
-                uses: aws-actions/eks/kubectl-tool@v2
+                uses: azure/setup-kubectl@v4    #aws-actions/eks/kubectl-tool@v2
                 with:
-                    version: '1.27'
+                    version: 'v1.27.0'
 
             -   name: Update kubeconfig for EKS
                 run: aws eks update-kubeconfig --region ${{ env.AWS_DEFAULT_REGION }} --name smartcity-eks
@@ -223,9 +223,9 @@ jobs:
                     aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
             -   name: Setup kubectl
-                uses: aws-actions/eks/kubectl-tool@v2
+                uses: azure/setup-kubectl@v4   #aws-actions/eks/kubectl-tool@v2
                 with:
-                    version: '1.27'
+                    version: 'v1.27.0'
 
             -   name: Update kubeconfig
                 run: aws eks update-kubeconfig --region ${{ env.AWS_DEFAULT_REGION }} --name smartcity-eks
