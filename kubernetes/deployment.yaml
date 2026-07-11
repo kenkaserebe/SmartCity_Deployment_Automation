@@ -1,0 +1,105 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smartcity-api-blue
+  namespace: production
+  labels:
+    app: smartcity-api
+    version: blue
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: smartcity-api
+      version: blue
+  template:
+    metadata:
+      labels:
+        app: smartcity-api
+        version: blue
+    spec:
+      containers:
+        - name: api
+          image: ghcr.io/smartcity/iot-api:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: host
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: password
+            - name: S3_BUCKET
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: s3_bucket
+            resources:
+              requests:
+                memory: "128Mi"
+                cpu: "100m"
+              limits:
+                memory: "256Mi"
+                cpu: "200m"
+            livenessProbe:
+              httpGet:
+                path: /health
+                port: 3000
+              initialDelaySeconds: 30
+              periodSeconds: 10
+            readinessProbe:
+              httpGet:
+                path: /ready
+                port: 3000
+              initialDelaySeconds: 5
+              periodSeconds: 5
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smartcity-api-green
+  namespace: production
+  labels:
+    app: smartcity-api
+    version: green
+spec:
+  replicas: 0 # Initially scaled to 0 for blue/green
+  selector:
+    matchLabels:
+      app: smartcity-api
+      version: green
+  template:
+    metadata:
+      labels:
+        app: smartcity-api
+        version: green
+    spec:
+      containers:
+        - name: api
+          image: ghcr.io/smartcity/iot-api:latest
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - secretRef:
+                name: db-secret
+            - configMapRef:
+                name: app-config
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
