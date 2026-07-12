@@ -1,13 +1,27 @@
 #!/usr/bin/env python3
+"""
+Automation script for Devops tasks including:
+- Infrastructure provisioning
+- CI/CD pipeline management
+- Monitoring setup
+- System integration
+"""
 
 import boto3
 import json
 import subprocess
+import requests
 import os
 import logging
-from datetime import datetime
 import argparse
+from datetime import datetime
+from typing import Dict, List, Optional
 
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    
+)
 # ...(logging config remains the same) ...
 
 class DevOpsAutomation:
